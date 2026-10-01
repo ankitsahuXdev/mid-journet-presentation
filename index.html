@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><title>Midjourney AI — From Imagination to Images</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>
+*{box-sizing:border-box;margin:0}
+:root{--p:#8b5cf6;--b:#3b82f6;--t:#eef0ff;--m:#a9b0d6;--g:rgba(255,255,255,.07)}
+html,body{height:100%;background:#05060f;color:var(--t);font-family:'Segoe UI',system-ui,sans-serif;overflow:hidden}
+#wrap{position:fixed;inset:0;display:grid;place-items:center}
+#stage{width:1280px;height:720px;position:relative;transform-origin:center;background:radial-gradient(1000px 600px at 15% 0,#2a1a66,transparent),radial-gradient(900px 600px at 100% 100%,#0f2a6b,transparent),#080a1c;overflow:hidden;flex:none}
+.slide{position:absolute;inset:0;padding:48px 70px 70px;opacity:0;pointer-events:none;transform:translateX(40px);transition:.5s}
+.slide.on{opacity:1;pointer-events:auto;transform:none}
+.slide.prev{transform:translateX(-40px)}
+h1{font-size:92px;letter-spacing:2px;line-height:1}
+h2{font-size:46px;margin-bottom:6px}
+.k{color:var(--p);font-size:18px;letter-spacing:3px;font-weight:700;margin-bottom:8px}
+.g{background:linear-gradient(135deg,#a78bfa,#60a5fa);-webkit-background-clip:text;background-clip:text;color:transparent}
+p,li{font-size:26px;line-height:1.4;color:var(--m)}
+.card{background:var(--g);border:1px solid rgba(255,255,255,.14);backdrop-filter:blur(12px);border-radius:20px;padding:20px 24px}
+.row{display:flex;gap:22px;align-items:stretch}.col{flex:1}
+.art{container-type:size;position:relative;border-radius:18px;overflow:hidden;background-size:cover;background-position:center;display:grid;place-items:center;box-shadow:0 10px 40px #0008,0 0 0 1px #fff2}
+.art span{font-size:52cqh;line-height:1;filter:drop-shadow(0 6px 14px #0008)}
+.art i{position:absolute;right:8%;top:8%;font-style:normal;font-size:20cqh;opacity:.9}
+.art:after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 30% 20%,#fff3,transparent 50%)}
+.q{font-family:Consolas,monospace;font-size:26px;color:#c4b5fd;background:#0006;border-radius:14px;padding:16px 20px;line-height:1.4}
+.btn{background:linear-gradient(135deg,var(--p),var(--b));color:#fff;border:0;border-radius:12px;padding:12px 22px;font-size:22px;cursor:pointer;font-weight:600}
+.btn.o{background:var(--g);border:1px solid #fff3}
+.tab{cursor:pointer;transition:.25s}.tab:hover{transform:translateY(-3px)}.tab.on{outline:2px solid var(--p);background:rgba(139,92,246,.22)}
+.a{opacity:0}.on .a{animation:up .7s both;animation-delay:var(--d,0s)}
+@keyframes up{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+@keyframes rev{from{filter:blur(40px) saturate(0);transform:scale(1.1)}to{filter:none;transform:none}}
+.on .rev{animation:rev 3.2s 1.2s both ease-out}
+.note{font-size:18px;color:#8b93c4;font-style:italic}
+.n{display:none}
+#notes{position:fixed;left:0;right:0;bottom:0;max-height:38vh;overflow:auto;background:#000d;padding:16px 28px;font-size:18px;line-height:1.5;display:none;z-index:9;border-top:2px solid var(--p)}
+#ui{position:fixed;left:0;right:0;bottom:0;display:flex;align-items:center;gap:10px;padding:10px 18px;z-index:5;background:linear-gradient(transparent,#000a);transition:.3s}
+#ui button{background:#ffffff18;color:#fff;border:1px solid #fff3;border-radius:10px;padding:8px 14px;font-size:15px;cursor:pointer}
+#ui button:hover{background:#ffffff33}
+#bar{position:fixed;top:0;left:0;height:4px;background:linear-gradient(90deg,var(--p),var(--b));z-index:6;transition:.4s}
+body.pm #ui{opacity:0}body.pm #ui:hover{opacity:1}
+.chip{display:inline-block;padding:4px 14px;border-radius:10px;margin:0 2px}
+.step{text-align:center;flex:1;padding:16px 6px}.step b{display:block;font-size:40px}.step small{font-size:18px;color:var(--t)}
+.arrow{align-self:center;color:var(--p);font-size:30px}
+.pill{border-radius:999px;background:var(--g);padding:6px 16px;font-size:18px}
+canvas{border-radius:18px}
+.art em{font-style:normal;font-size:max(15px,7cqh);text-align:center;padding:10%;color:#ffffffd0;position:relative;z-index:1;text-shadow:0 2px 10px #000;line-height:1.25}
+.badge{display:inline-block;background:#f59e0b33;border:1px solid #f59e0b;color:#fde68a;border-radius:10px;padding:6px 16px;font-size:20px;margin:6px 0}
+@keyframes ld{to{width:100%}}
+#wrap{display:block}#stage{position:absolute;left:50%;top:50%;margin:-360px 0 0 -640px}
+html,body{touch-action:manipulation;-webkit-text-size-adjust:100%;overscroll-behavior:none}
+#ui{padding-bottom:calc(10px + env(safe-area-inset-bottom));padding-left:calc(18px + env(safe-area-inset-left));padding-right:calc(18px + env(safe-area-inset-right))}
+#notes{bottom:52px;padding-left:calc(28px + env(safe-area-inset-left));padding-right:calc(28px + env(safe-area-inset-right))}
+#hint{position:fixed;top:10px;left:50%;transform:translateX(-50%);background:#000c;border:1px solid #fff3;color:#fff;padding:8px 14px;border-radius:12px;font-size:13px;z-index:20;display:none;text-align:center}
+@media (max-width:700px){#ui #pm,#ui #fs{display:none}#ui{gap:8px;padding-top:8px;padding-left:12px;padding-right:12px}#ui button{padding:10px 14px;font-size:14px}#notes{font-size:15px;bottom:48px}}
+@media (max-height:500px){#ui{padding-top:4px;padding-bottom:4px}#ui button{padding:6px 12px;font-size:13px}#notes{bottom:40px;font-size:14px}}
+</style></head><body>
+<div id="bar"></div>
+<div id="wrap"><div id="stage">
+
+<section class="slide"><div class="row" style="height:100%;align-items:center">
+<div class="col" style="flex:1.2"><div class="k a">CLASSROOM PRESENTATION</div>
+<h1 class="a g" style="--d:.1s">MIDJOURNEY AI</h1><h2 class="a" style="--d:.3s;font-weight:400;margin-top:14px">From Imagination to Images</h2>
+<div class="row a" style="--d:.5s;margin:30px 0;gap:10px;align-items:center;font-size:24px"><span class="pill">💡 Idea</span>→<span class="pill">⌨️ Prompt</span>→<span class="pill">✨ AI</span>→<span class="pill">🖼️ Image</span></div>
+<p class="a" style="--d:.7s;font-size:22px">Presented by <b style="color:#fff">Ankit Sahu</b><br>B.Tech CSE (AI) · Galgotias College of Engineering and Technology</p></div>
+<div class="col"><div class="q a" style="--d:.6s;margin-bottom:14px;font-size:22px">“A small astronaut on the moon, watching Earth”</div>
+<div class="art rev" data-k="astro" style="height:380px"></div></div></div>
+<aside class="n">Good morning everyone. Today I'll be talking about Midjourney AI. Basically, it's a tool that turns words into images. Everything starts with an idea in our head. We write that idea as a sentence, the AI works on it, and we get a picture. Look at the screen: the image slowly appears, like the idea is becoming real. Today we'll cover what Midjourney is, how it works, what it can do, and where it has limits. I'm Ankit, and I hope it's easy to follow.</aside></section>
+
+<section class="slide"><div class="k">WHAT IS IT?</div><h2>What is Midjourney?</h2>
+<div class="card a" style="margin:14px 0 22px"><p style="color:#fff">An <b class="g">AI-powered image generation tool</b> that creates images from natural-language prompts.</p></div>
+<div class="row" style="align-items:center"><div class="col a" style="--d:.2s"><div class="note">YOU WRITE</div><div class="q" style="margin:8px 0 20px">“A small astronaut sitting on the moon, watching Earth”</div>
+<p>1. We describe what we want<br>2. AI interprets the description<br>3. AI generates an image from it</p></div>
+<div class="arrow" style="font-size:50px">➜</div>
+<div class="col a" style="--d:.4s"><div class="note">AI CREATES</div><div class="art" data-k="astro" style="height:340px;margin-top:8px"></div></div></div>
+<aside class="n">So, what is Midjourney? It's an AI tool that creates images from a written description, which we call a prompt. For example, I type: a small astronaut sitting on the moon, watching Earth. Three things happen. First, I describe what I want. Second, the AI tries to understand my description. Third, it generates an image based on it. I don't need drawing skills, just an idea and the words to explain it. Words go in, an image comes out.</aside></section>
+
+<section class="slide"><div class="k">WHY IT MATTERS</div><h2>Why is it interesting?</h2>
+<div class="row" style="margin-top:26px">
+<div class="col card a"><div class="art" data-k="fantasy" style="height:230px"></div><h3 style="margin:14px 0 4px;font-size:28px">⏳ Hours → Minutes</h3><p style="font-size:22px">An idea that takes hours to draw can be visualised quickly.</p></div>
+<div class="col card a" style="--d:.2s"><div class="art" data-k="land" style="height:230px"></div><h3 style="margin:14px 0 4px;font-size:28px">🎨 Many directions</h3><p style="font-size:22px">One idea can give several creative possibilities.</p></div>
+<div class="col card a" style="--d:.4s"><div class="art" data-k="arch" style="height:230px"></div><h3 style="margin:14px 0 4px;font-size:28px">🧭 Explore fast</h3><p style="font-size:22px">Compare looks before investing real effort.</p></div></div>
+<h2 class="g a" style="--d:.7s;text-align:center;margin-top:26px;font-size:36px">It doesn't replace imagination — it helps us visualise imagination.</h2>
+<aside class="n">Why do people find this interesting? Mainly because of speed. Something that could take hours to draw can be visualised much faster. Also, we don't just get one option. We can explore many directions from the same idea. And it helps us try different looks before spending real effort. One line to remember: it doesn't replace imagination, it helps us visualise imagination. The idea still comes from us.</aside></section>
+
+<section class="slide"><div class="k">THE BIG IDEA</div><h2>How does Midjourney work?</h2><p style="font-size:22px">Click any step</p>
+<div class="row" id="pipe" style="margin-top:22px;gap:8px"></div>
+<div class="card" id="pd" style="margin-top:18px;display:flex;gap:28px;align-items:center;padding:16px"><div id="pv4" style="width:470px;height:230px;flex:none"></div><div><h3 id="pt" style="font-size:38px;margin-bottom:8px"></h3><p id="px" style="color:#fff;font-size:28px"></p></div></div>
+<div class="badge" style="margin-top:10px;font-size:18px">Simplified conceptual explanation — not Midjourney's exact internal implementation</div>
+<aside class="n">This is the most important slide, so let's go step by step. You can click each step. First, the idea, which starts in our mind. Second, we write it as a prompt. Third, the AI picks out the important parts of our words. Fourth, it generates an image that tries to match them. Fifth, we usually get a few variations. And sixth, we choose one, improve it, and keep the final image. Remember, this is a simplified explanation. I'm not going into the technical details of what happens inside.</aside></section>
+
+<section class="slide"><div class="k">INSIDE A PROMPT</div><h2>What happens to our prompt?</h2>
+<div class="q" id="bp" style="margin:16px 0;font-size:30px;line-height:2">“A <span class="chip tab" data-i="0" style="--c:#8b5cf6">golden retriever</span> sitting in a <span class="chip tab" data-i="1">coffee shop</span>, <span class="chip tab" data-i="2">warm sunlight</span>, <span class="chip tab" data-i="3">realistic photography</span>”</div>
+<div class="row" style="align-items:center"><div class="col"><div class="card" style="min-height:190px"><div class="note" id="bl">Click each part of the prompt</div><h3 id="bt" style="font-size:34px;margin:6px 0"></h3><p id="bx" style="color:#fff"></p></div>
+<p style="margin-top:16px;font-size:22px">Details given: <b id="bm" style="color:#fff">0 / 4</b> — better description → more controlled result.</p>
+<p class="note" style="margin-top:6px">(Longer is not always better — clear and relevant is better.)</p></div>
+<div class="col"><div class="art" id="ba" data-k="dog" style="height:330px;filter:grayscale(1) brightness(.6);transition:1s"></div></div></div>
+<aside class="n">Now let's see what's inside a prompt. Take this sentence: a golden retriever sitting in a coffee shop, warm sunlight, realistic photography. I can split it into four parts: the subject, the location, the lighting, and the style. As I click each part, the image becomes clearer, because we're giving the AI more information. So a better description gives us more control. But a longer prompt is not always better. What matters is that the details are clear and relevant.</aside></section>
+
+<section class="slide"><div class="k">WHAT IS THE AI DOING?</div><h2>From words to a picture</h2>
+<div class="row" style="margin-top:18px;gap:10px">
+<div class="card col a"><div class="note">YOU (HUMAN)</div><div class="q" style="margin-top:10px;font-size:30px;line-height:1.35">“I want a futuristic city at sunset.”</div></div>
+<div class="arrow" style="font-size:44px">➜</div>
+<div class="card col a" style="--d:.3s"><div class="note">AI UNDERSTANDS THE KEY PARTS</div><div style="margin-top:12px;display:grid;gap:8px"><span class="pill" style="font-size:24px;background:#8b5cf655">City — the subject</span><span class="pill" style="font-size:24px;background:#3b82f655">Futuristic — the style</span><span class="pill" style="font-size:24px;background:#f59e0b55">Sunset — the light</span><span class="pill" style="font-size:24px;background:#10b98155">Details — extra elements</span></div></div>
+<div class="arrow" style="font-size:44px">➜</div>
+<div class="card col a" style="--d:.6s"><div class="note">AI GENERATES A VISUAL</div><div class="art" data-k="city" style="height:230px;margin-top:10px"></div></div></div>
+<h2 class="a g" style="--d:.9s;font-size:36px;text-align:center;margin-top:22px">Think of it as giving the AI a detailed visual instruction.</h2>
+<div style="text-align:center"><div class="badge">Simplified explanation — not the exact internal process</div></div>
+<aside class="n">Now let's see what the AI is doing, in simple terms. I say: I want a futuristic city at sunset. The AI picks out the important parts: a city, a futuristic style, a sunset, and some extra details. Then it generates a visual based on those instructions. The way I like to think about it is that we're giving the AI a detailed visual instruction. One important note: this is a simplified explanation, not the exact technical process inside Midjourney.</aside></section>
+
+<section class="slide"><div class="k">PROMPT ENGINEERING</div><h2>What makes a useful prompt?</h2>
+<div class="row" style="margin:18px 0;gap:10px;align-items:center" id="fm"></div>
+<div class="row" style="margin-bottom:14px"><button class="btn tab on" id="t0">Simple</button><button class="btn o tab" id="t1">Detailed</button></div>
+<div class="row" style="align-items:center"><div class="col"><div class="q" id="cq" style="font-size:28px"></div><p id="cn" style="margin-top:14px;font-size:22px"></p></div>
+<div class="col row" style="gap:12px"><div class="art" id="ca0" style="height:290px;flex:1;transition:.4s"></div><div class="art" id="ca1" style="height:290px;flex:1;transition:.4s"></div></div></div>
+<aside class="n">So how do we write a good prompt? A useful prompt usually answers five questions: what do you want, where is it, what should it look like, what kind of light, and what extra details. Now compare these two prompts. 'A car' is simple. That's not wrong, it's just less specific, so the AI has more freedom to guess. The second one gives clear direction: futuristic, electric, neon city at night, cinematic. The result is much closer to a specific idea.</aside></section>
+
+<section class="slide"><div class="k">MINI LIVE DEMO</div><h2>Image generation example</h2>
+<div class="row" style="margin:12px 0;align-items:center"><div class="q col" id="dq" style="font-size:24px"></div><button class="btn" id="dn">▶ Start demo</button></div>
+<div class="row" style="gap:8px;margin-bottom:12px" id="ds"></div>
+<div class="card" id="dv" style="height:330px;display:grid;place-items:center;text-align:center"></div>
+<aside class="n">Let's do a small live demo. Our idea is: a futuristic city in the clouds. I click start. First we write it as a prompt. Then the AI processes it. It gives us several variations, each a little different. Now comes the human part: I choose the one I like most. Then I refine it, for example by adding golden sunset light or more detail. And finally, we get our final image. Notice that at each important step, the human is making the decision.</aside></section>
+
+<section class="slide"><div class="k">GALLERY</div><h2>What can Midjourney create?</h2>
+<div class="row" style="margin-top:14px;gap:16px"><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;width:430px;align-content:start" id="gc"></div>
+<div class="col"><div class="art" id="ga" style="height:330px"></div><div class="q" id="gp" style="margin-top:12px;font-size:22px"></div><p id="gu" style="margin-top:8px;font-size:22px"></p></div></div>
+<aside class="n">Midjourney can be used for many kinds of visuals. I'll click through a few. Art, architecture, film concepts, game concepts, fashion, advertising, social media and educational visuals. For each one you can see an example prompt and one line about how it's used. The general idea is simple: if you can describe it in words, you can try to visualise it. These are mostly for ideas and concepts, not always the final product.</aside></section>
+
+<section class="slide"><div class="k">VISUAL EXPLANATION</div><h2>Prompt → Result: the journey</h2><div class="badge">Simplified teaching model — NOT Midjourney's actual internal architecture</div>
+<div class="row" style="margin-top:8px"><div class="col" style="flex:1.6;position:relative"><canvas id="cv" width="700" height="430" style="width:100%;background:#0006"></canvas><div class="note" style="position:absolute;left:14px;bottom:10px">Drag to rotate</div></div>
+<div class="col"><div id="sb" style="display:grid;gap:8px"></div><div class="card" style="margin-top:12px"><h3 id="s3t" style="font-size:26px"></h3><p id="s3x" style="font-size:20px;color:#fff"></p></div></div></div>
+
+<aside class="n">Here's a simple visual model. Please note: this is a simplified teaching model, not Midjourney's actual internal architecture. Midjourney doesn't literally have four 3D objects inside it. I'm only using this to show the journey of an idea. First the prompt, then interpretation, where the words are understood, then generation, and finally the result. You can drag the model to rotate it, and click the stages on the right to read what each one means.</aside></section>
+
+<section class="slide"><div class="k">REAL WORLD</div><h2>Where can it be useful?</h2>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:18px" id="ap"></div>
+<aside class="n">So where can Midjourney be useful? In design, for concepts and posters. In architecture, for early visual ideas. In film, for scenes and characters. In gaming, for characters and environments. In marketing, for campaign ideas. And in education, to visualise difficult ideas. In most of these cases it's used at the idea stage, to explore and discuss, before the real work begins.</aside></section>
+
+<section class="slide"><div class="k">BENEFITS</div><h2>Advantages</h2>
+<div id="ad" style="display:grid;gap:12px;margin-top:20px"></div>
+<aside class="n">Let's talk about the advantages. One, we can visualise ideas quickly. Two, we can generate multiple creative directions. Three, it's useful for brainstorming. Four, it helps create visual concepts. And five, it can support different creative fields. Basically, it helps us move from a thought in our head to something we can actually look at and discuss with others.</aside></section>
+
+<section class="slide"><div class="k">BALANCED VIEW</div><h2>Limitations and responsible use</h2>
+<div id="li" style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:20px"></div>
+<aside class="n">Now an honest look at the limitations, because no tool is perfect. The results may contain mistakes. Getting exact control can be difficult. The image may not match the prompt perfectly. There are questions about copyright and ownership. AI content can also be misused. That's why human judgment is still very important. We should use these tools carefully and responsibly, and always check what we create.</aside></section>
+
+<section class="slide"><div class="k">BETTER TOGETHER</div><h2>Midjourney and human creativity</h2>
+<div class="row" style="margin-top:18px"><div class="col card a"><h3 class="g" style="font-size:32px">🧑 HUMAN</h3><p style="color:#fff;margin-top:8px">Idea<br>↓ Direction<br>↓ Judgment<br>↓ Creativity</p></div>
+<div class="arrow" style="font-size:50px">+</div>
+<div class="col card a" style="--d:.2s"><h3 class="g" style="font-size:32px">🤖 AI</h3><p style="color:#fff;margin-top:8px">Generation<br>↓ Variations<br>↓ Visual assistance<br>↓ Experimentation</p></div></div>
+<div class="card a" style="--d:.5s;margin-top:18px;text-align:center;background:linear-gradient(135deg,#8b5cf655,#3b82f655)"><h3 style="font-size:32px">HUMAN + AI</h3><p style="color:#fff;font-size:24px">The human provides the idea and direction; AI can help explore and visualise possibilities.</p></div>
+<aside class="n">A common question is: will AI replace human creativity? I prefer to see it as teamwork. The human brings the idea, the direction, the judgment and the creativity. The AI brings generation, variations, visual assistance and experimentation. Together, the human provides the idea and direction, and the AI helps us explore and visualise possibilities. So it's not AI versus humans. It's humans using AI as a helper.</aside></section>
+
+<section class="slide"><div class="row" style="height:100%;align-items:center"><div class="col" style="flex:1.3"><div class="k">CONCLUSION</div><h2 class="g" style="font-size:54px;margin-bottom:16px">What we learned</h2>
+<ol style="padding-left:30px"><li class="a">Midjourney generates images from text prompts.</li><li class="a" style="--d:.15s">A prompt tells the AI what we want.</li><li class="a" style="--d:.3s">More specific descriptions can give more control.</li><li class="a" style="--d:.45s">It can be useful in many creative fields.</li><li class="a" style="--d:.6s">AI has limitations, so human judgment stays important.</li></ol></div>
+<div class="col" style="text-align:center"><div class="art" data-k="city" style="height:300px"></div><h1 class="g" style="font-size:64px;margin-top:20px">THANK YOU</h1><h2 style="font-weight:400">Any questions?</h2></div></div>
+<aside class="n">To wrap up, here's what we learned. Midjourney generates images from text prompts. A prompt tells the AI what we want. More specific descriptions can give us more control. It can be useful in many creative fields. And AI has limitations, so human judgment remains important. Thank you so much for listening. I'm happy to answer any questions.</aside></section>
+</div></div>
+
+<div id="notes"></div><div id="hint">Better view: rotate your phone to landscape</div>
+<div id="ui"><button id="pv">◀ Prev</button><button id="nx">Next ▶</button><span id="cnt" style="font-size:16px;margin:0 8px"></span><span style="flex:1"></span><button id="nt">Notes (N)</button><button id="fs">Fullscreen (F)</button><button id="pm">PRESENTATION MODE</button></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+// Optional: put your real Midjourney images here, e.g. IMG.astro='images/astro.jpg'
+const IMG={astro:'images/astro.jpg',city:'images/city.jpg',city1:'images/city1.jpg',city2:'images/city2.jpg',city3:'images/city3.jpg',city4:'images/city4.jpg',cityf:'images/city_final.jpg',car0:'images/car_simple.jpg',car:'images/car.jpg',dog:'images/dog.jpg',fantasy:'images/fantasy.jpg',arch:'images/architecture.jpg',char:'images/character.jpg',film:'images/film.jpg',game:'images/game.jpg',fashion:'images/fashion.jpg',ad:'images/advertising.jpg',social:'images/social.jpg',edu:'images/education.jpg',land:'images/landscape.jpg'};
+const S={astro:['#070720,#4b3bb0','Astronaut sitting on the moon, watching Earth'],city:['#5aa2ff,#c4b5fd','Futuristic city in the clouds at sunset'],city1:['#3b82f6,#e9d5ff','Variation 1'],city2:['#7c3aed,#f9a8d4','Variation 2'],city3:['#0ea5e9,#fbbf24','Variation 3'],city4:['#4338ca,#67e8f9','Variation 4'],cityf:['#f59e0b,#7c3aed','Final refined image'],car0:['#444,#999','A simple car'],car:['#1a0533,#0ea5e9','Futuristic electric sports car, neon city at night'],dog:['#f5b86b,#7a4a24','Golden retriever in a coffee shop, warm sunlight'],fantasy:['#1b1147,#8b3fd1','Fantasy dragon and castle'],arch:['#7dd3fc,#94a3b8','Modern museum building concept'],char:['#2a0a4a,#c026d3','Character design concept'],film:['#111,#7f1d1d','Film scene: detective in a rainy neon street'],game:['#052e16,#7c3aed','Game environment concept'],fashion:['#831843,#f9a8d4','Fashion design concept'],ad:['#f59e0b,#ef4444','Advertising poster concept'],social:['#6366f1,#ec4899','Social media visual'],edu:['#0ea5e9,#22d3ee','Educational illustration: a living cell'],land:['#0ea5e9,#16a34a','Landscape: mountains at sunrise']};
+function art(e,k){const s=S[k];e.dataset.k=k;e.style.backgroundImage=`linear-gradient(160deg,${s[0]})`;e.innerHTML=`<em>${s[1]}</em>`;if(IMG[k]){const m=new Image();m.onload=()=>{e.style.backgroundImage=`url(${IMG[k]})`;e.innerHTML=''};m.src=IMG[k]}}
+const A=(k,h)=>`<div class="art" data-k="${k}" style="height:${h}px"></div>`;
+const slides=$$('.slide');let cur=0;
+// Slide 4 pipeline
+const P=[['IDEA','Idea','It starts in your mind.','You imagine something, like a futuristic city at sunset.'],['PROMPT','Prompt','You put the idea into words.','The prompt is your description, written like a normal sentence.'],['AI UNDERSTANDS','Understands','The AI picks out the key parts.','It looks at the important words: what, where, which style, which light.'],['IMAGE GENERATION','Generation','The image is created.','The AI makes an image that tries to match your description.'],['VARIATIONS','Variations','You get a few options.','The same prompt can give several different versions to compare.'],['FINAL IMAGE','Final','You choose and improve.','You pick the best one, refine it, and keep the final image.']];
+$('#pipe').innerHTML=P.map((s,i)=>`<div class="card tab step" data-i="${i}" style="padding:12px 4px"><b>${i+1}</b><small style="font-size:16px;font-weight:700">${s[0]}</small></div>`+(i<5?'<div class="arrow">›</div>':'')).join('');
+const V4=i=>[`<div class="art" data-k="city" style="height:230px;filter:grayscale(1) blur(10px);opacity:.7"></div>`,`<div class="q" style="font-size:26px;height:230px;display:grid;align-items:center">“A futuristic city in the clouds at sunset, cinematic, detailed”</div>`,`<div style="height:230px;display:flex;flex-wrap:wrap;gap:10px;align-content:center">${['City','Futuristic','Sunset','Style & details'].map(x=>`<span class="pill" style="font-size:26px;background:#8b5cf655">${x}</span>`).join('')}</div>`,`<div class="art" data-k="city" style="height:230px;animation:rev 3s both"></div>`,`<div class="row" style="gap:8px">${[1,2,3,4].map(n=>`<div class="art" data-k="city${n}" style="height:230px;flex:1"></div>`).join('')}</div>`,`<div class="art" data-k="cityf" style="height:230px"></div>`][i];
+const pick=i=>{$$('#pipe .step').forEach((e,j)=>e.classList.toggle('on',j==i));$('#pv4').innerHTML=V4(i);$$('#pv4 .art').forEach(e=>art(e,e.dataset.k));$('#pt').textContent=P[i][2];$('#px').textContent=P[i][3]};
+$$('#pipe .step').forEach(e=>e.onclick=()=>pick(+e.dataset.i));pick(0);
+// Slide 5 chips
+const B=[['Subject','Golden retriever','Tells the AI WHAT to draw.'],['Location','Coffee shop','Tells the AI WHERE it is.'],['Lighting','Warm sunlight','Sets the mood and the colours.'],['Style','Realistic photography','Decides how the image looks overall.']];const used=new Set();
+$$('#bp .chip').forEach((c,i)=>{c.style.background=['#8b5cf655','#3b82f655','#f59e0b55','#10b98155'][i];c.onclick=()=>{used.add(i);$('#bl').textContent=B[i][0].toUpperCase();$('#bt').textContent=B[i][1];$('#bx').textContent=B[i][2];$('#bm').textContent=used.size+' / 4';$('#ba').style.filter=`grayscale(${1-used.size/4}) brightness(${.6+used.size*.1})`}});
+// Slide 6
+$('#fm').innerHTML=[['SUBJECT','What do you want?'],['ENVIRONMENT','Where is it?'],['STYLE','What should it look like?'],['LIGHTING','What type of light?'],['DETAILS','What extra elements?']].map((f,i)=>`<div class="card a" style="--d:${i*.12}s;flex:1;padding:14px"><b class="g" style="font-size:20px">${f[0]}</b><div style="color:var(--m);font-size:17px">${f[1]}</div></div>`+(i<4?'<b style="font-size:30px;color:var(--p)">+</b>':'')).join('');
+const C=[['“A car”','Simple and open — the AI has more freedom to choose the details.','car0'],['“A futuristic electric sports car on a neon-lit city street at night, cinematic lighting, realistic photography”','Specific — the AI gets clear direction, so the result is closer to the idea.','car']];
+const cmp=i=>{$('#cq').textContent=C[i][0];$('#cn').textContent=C[i][1];[0,1].forEach(j=>{art($('#ca'+j),C[j][2]);$('#ca'+j).style.opacity=j==i?1:.35});[0,1].forEach(j=>{$('#t'+j).classList.toggle('on',j==i);$('#t'+j).classList.toggle('o',j!=i)})};
+$('#t0').onclick=()=>cmp(0);$('#t1').onclick=()=>cmp(1);cmp(0);
+// Slide 7 demo
+const D=['Idea','Prompt','Processing','Variations','Choose','Refine','Final'];let ds=-1;const DP='“A futuristic city in the clouds”';
+$('#ds').innerHTML=D.map(d=>`<span class="pill" style="flex:1;text-align:center">${d}</span>`).join('');$('#dq').textContent='Our idea: '+DP;
+const tb=()=>[1,2,3,4].map(n=>`<div class="art tab th" data-k="city${n}" data-i="${n}" style="height:240px;width:210px"></div>`).join('');
+const dem=()=>{ds=(ds+1)%7;$$('#ds .pill').forEach((p,i)=>p.style.background=i<=ds?'linear-gradient(135deg,#8b5cf6,#3b82f6)':'');const v=$('#dv');$('#dn').textContent=ds==6?'↻ Restart':'Next step ▶';
+ const h=[`<div><div class="art" data-k="city" style="height:230px;width:400px;margin:auto;filter:grayscale(1) blur(12px);opacity:.6"></div><p style="font-size:30px;color:#fff;margin-top:12px">Idea: still only in our mind</p></div>`,
+ `<div><div class="q" style="font-size:34px">${DP}</div><p class="note" style="margin-top:12px;font-size:22px">We write the idea as a prompt</p></div>`,
+ `<div><div class="art" data-k="city" style="height:200px;width:360px;margin:auto;animation:rev 2.5s both"></div><div style="width:360px;height:10px;background:#fff2;border-radius:9px;margin:14px auto"><div style="height:100%;border-radius:9px;background:linear-gradient(90deg,#8b5cf6,#3b82f6);animation:ld 2.5s both;width:0"></div></div><p style="font-size:26px;color:#fff">The AI is working on the prompt…</p></div>`,
+ `<div><div class="row" style="gap:14px">${tb()}</div><p style="margin-top:10px;font-size:24px;color:#fff">Several variations of the same prompt</p></div>`,
+ `<div><div class="row" style="gap:14px">${tb()}</div><p style="margin-top:10px;font-size:24px;color:#fff">You choose the one you like (click to change)</p></div>`,
+ `<div class="row" style="align-items:center;gap:22px"><div class="art" data-k="city3" style="height:260px;width:340px;flex:none"></div><div><div class="q" style="font-size:24px">${DP.slice(0,-1)}, golden sunset light, more detail”</div><p class="note" style="margin-top:10px;font-size:22px">We keep our choice, add direction, and generate again</p></div></div>`,
+ `<div class="row" style="align-items:center;gap:24px"><div class="art" data-k="cityf" style="height:300px;width:520px;flex:none"></div><h3 class="g" style="font-size:44px">Final image</h3></div>`][ds];
+ v.innerHTML=h;$$('#dv .art').forEach(e=>art(e,e.dataset.k));
+ if(ds==4){const sel=x=>$$('#dv .th').forEach(e=>{e.classList.toggle('on',e.dataset.i==x);e.style.opacity=e.dataset.i==x?1:.4});sel(3);$$('#dv .th').forEach(e=>e.onclick=()=>sel(e.dataset.i))}};
+$('#dn').onclick=dem;$('#dv').innerHTML='<p style="font-size:30px">Click “Start demo”</p>';
+// Slide 8 gallery
+const G=[['🎨','Art','fantasy','A dragon over a glowing castle, digital painting','Artists explore styles and moods quickly.'],['🏠','Architecture','arch','A modern eco-friendly museum with green roofs','Early visual concepts before detailed plans.'],['🎬','Film Concepts','film','A detective in a rainy neon street, cinematic','Directors visualise scenes and characters.'],['🎮','Game Concepts','game','A glowing alien forest level, stylised game art','Teams test looks for characters and worlds.'],['👗','Fashion','fashion','An elegant dress inspired by ocean waves','Designers try colours and shapes.'],['📢','Advertising','ad','A refreshing drink splash, bright summer poster','Marketers test campaign ideas.'],['📱','Social Media','social','A colourful travel post background','Creators make eye-catching visuals.'],['📚','Educational Visuals','edu','A friendly cutaway of a living cell','Teachers illustrate difficult ideas.']];
+$('#gc').innerHTML=G.map((g,i)=>`<div class="card tab" data-i="${i}" style="padding:14px;font-size:22px">${g[0]} ${g[1]}</div>`).join('');
+const gal=i=>{$$('#gc .tab').forEach((e,j)=>e.classList.toggle('on',j==i));art($('#ga'),G[i][2]);$('#gp').textContent='“'+G[i][3]+'”';$('#gu').textContent=G[i][4]};
+$$('#gc .tab').forEach(e=>e.onclick=()=>gal(+e.dataset.i));gal(0);
+// Slides 10-12
+$('#ap').innerHTML=[['DESIGN','Concepts, posters, visual ideas','social'],['ARCHITECTURE','Early visual concepts','arch'],['FILM','Scene and character concepts','film'],['GAMING','Character and environment ideas','char'],['MARKETING','Campaign and advertising concepts','ad'],['EDUCATION','Visualising difficult ideas','edu']].map((a,i)=>`<div class="card a" style="--d:${i*.1}s;padding:14px">${A(a[2],140)}<b class="g" style="font-size:24px;display:block;margin-top:10px">${a[0]}</b><div style="color:var(--m);font-size:20px">${a[1]}</div></div>`).join('');
+$('#ad').innerHTML=['Quickly visualise ideas','Generate multiple creative directions','Useful for brainstorming','Helps create visual concepts','Can support different creative fields'].map((t,i)=>`<div class="card a" style="--d:${i*.15}s;font-size:30px;color:#fff">✅ ${t}</div>`).join('');
+$('#li').innerHTML=['Results may contain mistakes','Exact control can be difficult','Images may not always match the prompt perfectly','Copyright and ownership can raise questions','AI-generated content can be misused','Human judgment is still important'].map((t,i)=>`<div class="card a" style="--d:${i*.12}s;font-size:25px;color:#fff;min-height:110px">⚠️ ${t}</div>`).join('');
+// Slide 9: Three.js (simplified teaching model)
+const T=[['Prompt','Your words are the starting point.'],['Interpretation','The AI works out what the words mean.'],['Generation','The image is built from that understanding.'],['Result','You get an image to review and refine.']];
+let R=null,sel=0;
+$('#sb').innerHTML=T.map((t,i)=>`<div class="card tab" data-i="${i}" style="padding:10px 16px;font-size:22px">${i+1} · ${t[0]}</div>`).join('');
+function ss(i){sel=i;$$('#sb .tab').forEach((e,j)=>e.classList.toggle('on',j==i));$$('.fb').forEach((e,j)=>e.classList.toggle('on',j==i));$('#s3t').textContent=T[i][0];$('#s3x').textContent=T[i][1]}
+$$('#sb .tab').forEach(e=>e.onclick=()=>ss(+e.dataset.i));ss(0);
+function fb(){const c=$('#cv');if(!c)return;c.parentElement.innerHTML='<div style="display:flex;align-items:center;gap:8px;height:430px">'+T.map((t,i)=>`<div class="card tab fb" data-i="${i}" style="flex:1;text-align:center;padding:30px 6px"><b class="g" style="font-size:48px">${i+1}</b><div style="font-size:24px;margin-top:8px">${t[0]}</div></div>`+(i<3?'<div class="arrow">›</div>':'')).join('')+'</div>';$$('.fb').forEach(e=>e.onclick=()=>ss(+e.dataset.i));ss(sel)}
+function init3(){if(R)return;R=1;try{if(!window.THREE)throw 0;
+ const cv=$('#cv'),r=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true});r.setSize(700,430,false);const sc=new THREE.Scene(),cam=new THREE.PerspectiveCamera(45,700/430,.1,100);cam.position.set(0,1.5,10);cam.lookAt(0,-.3,0);
+ sc.add(new THREE.AmbientLight(0xffffff,.6));const l=new THREE.PointLight(0xffffff,1.2);l.position.set(3,5,8);sc.add(l);
+ const grp=new THREE.Group();sc.add(grp);const G3=[new THREE.SphereGeometry(.7,24,24),new THREE.IcosahedronGeometry(.8,0),new THREE.BoxGeometry(1.1,1.1,1.1),new THREE.TorusGeometry(.6,.25,14,30)],C3=[0x8b5cf6,0x6366f1,0x3b82f6,0x22d3ee],ob=[];
+ G3.forEach((g,i)=>{const m=new THREE.Mesh(g,new THREE.MeshStandardMaterial({color:C3[i],roughness:.35,metalness:.3}));m.position.x=-4.5+i*3;grp.add(m);ob.push(m)});
+ const ln=new THREE.Mesh(new THREE.CylinderGeometry(.04,.04,9,8),new THREE.MeshBasicMaterial({color:0x5a5f9a}));ln.rotation.z=Math.PI/2;grp.add(ln);
+ const pk=new THREE.Mesh(new THREE.SphereGeometry(.17,12,12),new THREE.MeshBasicMaterial({color:0xffffff}));grp.add(pk);
+ T.forEach((t,i)=>{const c=document.createElement('canvas');c.width=256;c.height=64;const g=c.getContext('2d');g.fillStyle='#fff';g.font='bold 34px sans-serif';g.textAlign='center';g.fillText(t[0],128,44);const s=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(c),transparent:true}));s.scale.set(3,.75,1);s.position.set(-4.5+i*3,-1.5,0);grp.add(s)});
+ let dr=false,lx=0;cv.onmousedown=e=>{dr=true;lx=e.clientX};addEventListener('mouseup',()=>dr=false);addEventListener('mousemove',e=>{if(dr){grp.rotation.y+=(e.clientX-lx)*.01;lx=e.clientX}});
+ let t=0;(function loop(){requestAnimationFrame(loop);if(cur!=9)return;t+=.01;pk.position.x=-4.5+((t*2)%1)*9;ob.forEach((m,i)=>{m.rotation.y+=.01;m.scale.setScalar(i==sel?1.3:1)});r.render(sc,cam)})();
+ }catch(e){fb()}}
+// Navigation
+const notes=$('#notes');
+function go(n){n=Math.max(0,Math.min(slides.length-1,n));slides.forEach((s,i)=>{s.classList.toggle('on',i==n);s.classList.toggle('prev',i<n)});cur=n;
+ $('#cnt').textContent=(n+1)+' / '+slides.length;$('#bar').style.width=((n+1)/slides.length*100)+'%';notes.innerHTML='<b>Speaker notes — slide '+(n+1)+':</b><br>'+slides[n].querySelector('.n').innerHTML;if(n==9)init3()}
+let rot=false;
+function fit(){const w=innerWidth,h=innerHeight;rot=h>w&&w<820;const res=rot?56:(h<500?44:0);
+ const sc=rot?Math.min((h-res)/1280,w/720):Math.min(w/1280,(h-res)/720);
+ $('#stage').style.transform=(rot?'rotate(90deg) ':'')+'scale('+sc+')';$('#wrap').style.bottom=res+'px';
+ const hn=$('#hint');if(rot&&!window._hs){window._hs=1;hn.style.display='block';setTimeout(()=>hn.style.display='none',4500)}}
+const de=document.documentElement,rf=de.requestFullscreen||de.webkitRequestFullscreen;
+const goFS=()=>{try{const r=rf&&rf.call(de);r&&r.catch&&r.catch(()=>{})}catch(e){}};
+const fs=()=>{if(!rf)return;document.fullscreenElement?document.exitFullscreen():goFS()};
+if(!rf){$('#fs').style.display='none';$('#pm').style.display='none'}
+$('#pv').onclick=()=>go(cur-1);$('#nx').onclick=()=>go(cur+1);$('#fs').onclick=fs;
+$('#nt').onclick=()=>notes.style.display=notes.style.display=='block'?'none':'block';
+$('#pm').onclick=()=>{document.body.classList.add('pm');goFS()};
+document.onfullscreenchange=()=>{if(!document.fullscreenElement)document.body.classList.remove('pm');fit()};
+addEventListener('keydown',e=>{const k=e.key;if(k=='ArrowRight'||k==' '||k=='PageDown'){e.preventDefault();go(cur+1)}else if(k=='ArrowLeft'||k=='PageUp')go(cur-1);else if(k=='Home')go(0);else if(k=='End')go(99);else if(k=='f'||k=='F')fs();else if(k=='n'||k=='N')$('#nt').click();else if(k=='p'||k=='P')$('#pm').click()});
+let tx=0,ty=0;
+addEventListener('touchstart',e=>{const t=e.changedTouches[0];tx=t.clientX;ty=t.clientY},{passive:true});
+addEventListener('touchend',e=>{if(e.target.closest&&e.target.closest('#ui,#notes'))return;const t=e.changedTouches[0],dx=t.clientX-tx,dy=t.clientY-ty,a=rot?dy:dx,o=rot?dx:dy;if(Math.abs(a)>50&&Math.abs(a)>Math.abs(o)*1.5)go(a<0?cur+1:cur-1)},{passive:true});
+addEventListener('orientationchange',()=>setTimeout(fit,250));
+addEventListener('resize',fit);$$('.art[data-k]').forEach(e=>art(e,e.dataset.k));fit();go(0);
+</script></body></html>
