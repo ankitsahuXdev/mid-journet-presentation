@@ -49,6 +49,7 @@ canvas{border-radius:18px}
 html,body{touch-action:manipulation;-webkit-text-size-adjust:100%;overscroll-behavior:none}
 #ui{padding-bottom:calc(10px + env(safe-area-inset-bottom));padding-left:calc(18px + env(safe-area-inset-left));padding-right:calc(18px + env(safe-area-inset-right))}
 #notes{bottom:52px;padding-left:calc(28px + env(safe-area-inset-left));padding-right:calc(28px + env(safe-area-inset-right))}
+#nc{float:right;margin:0 0 8px 12px;background:#ffffff22;color:#fff;border:1px solid #fff4;border-radius:8px;padding:6px 12px;font-size:14px;cursor:pointer}#nc:hover{background:#ffffff44}
 #hint{position:fixed;top:10px;left:50%;transform:translateX(-50%);background:#000c;border:1px solid #fff3;color:#fff;padding:8px 14px;border-radius:12px;font-size:13px;z-index:20;display:none;text-align:center}
 @media (max-width:700px){#ui #pm,#ui #fs{display:none}#ui{gap:8px;padding-top:8px;padding-left:12px;padding-right:12px}#ui button{padding:10px 14px;font-size:14px}#notes{font-size:15px;bottom:48px}}
 @media (max-height:500px){#ui{padding-top:4px;padding-bottom:4px}#ui button{padding:6px 12px;font-size:13px}#notes{bottom:40px;font-size:14px}}
@@ -224,9 +225,9 @@ function init3(){if(R)return;R=1;try{if(!window.THREE)throw 0;
  let t=0;(function loop(){requestAnimationFrame(loop);if(cur!=9)return;t+=.01;pk.position.x=-4.5+((t*2)%1)*9;ob.forEach((m,i)=>{m.rotation.y+=.01;m.scale.setScalar(i==sel?1.3:1)});r.render(sc,cam)})();
  }catch(e){fb()}}
 // Navigation
-const notes=$('#notes');
+const notes=$('#notes');notes.addEventListener('click',e=>{if(e.target.id=='nc')notes.style.display='none'});
 function go(n){n=Math.max(0,Math.min(slides.length-1,n));slides.forEach((s,i)=>{s.classList.toggle('on',i==n);s.classList.toggle('prev',i<n)});cur=n;
- $('#cnt').textContent=(n+1)+' / '+slides.length;$('#bar').style.width=((n+1)/slides.length*100)+'%';notes.innerHTML='<b>Speaker notes — slide '+(n+1)+':</b><br>'+slides[n].querySelector('.n').innerHTML;if(n==9)init3()}
+ $('#cnt').textContent=(n+1)+' / '+slides.length;$('#bar').style.width=((n+1)/slides.length*100)+'%';notes.innerHTML='<button id="nc" title="Close notes (Esc)">✕ Close</button><b>Speaker notes — slide '+(n+1)+':</b><br>'+slides[n].querySelector('.n').innerHTML;if(n==9)init3()}
 let rot=false;
 function fit(){const w=innerWidth,h=innerHeight;rot=h>w&&w<820;const res=rot?56:(h<500?44:0);
  const sc=rot?Math.min((h-res)/1280,w/720):Math.min(w/1280,(h-res)/720);
@@ -240,7 +241,7 @@ $('#pv').onclick=()=>go(cur-1);$('#nx').onclick=()=>go(cur+1);$('#fs').onclick=f
 $('#nt').onclick=()=>notes.style.display=notes.style.display=='block'?'none':'block';
 $('#pm').onclick=()=>{document.body.classList.add('pm');goFS()};
 document.onfullscreenchange=()=>{if(!document.fullscreenElement)document.body.classList.remove('pm');fit()};
-addEventListener('keydown',e=>{const k=e.key;if(k=='ArrowRight'||k==' '||k=='PageDown'){e.preventDefault();go(cur+1)}else if(k=='ArrowLeft'||k=='PageUp')go(cur-1);else if(k=='Home')go(0);else if(k=='End')go(99);else if(k=='f'||k=='F')fs();else if(k=='n'||k=='N')$('#nt').click();else if(k=='p'||k=='P')$('#pm').click()});
+addEventListener('keydown',e=>{const k=e.key;if(k=='ArrowRight'||k==' '||k=='PageDown'){e.preventDefault();go(cur+1)}else if(k=='ArrowLeft'||k=='PageUp')go(cur-1);else if(k=='Home')go(0);else if(k=='End')go(99);else if(k=='f'||k=='F')fs();else if(k=='n'||k=='N')$('#nt').click();else if(k=='Escape')notes.style.display='none';else if(k=='p'||k=='P')$('#pm').click()});
 let tx=0,ty=0;
 addEventListener('touchstart',e=>{const t=e.changedTouches[0];tx=t.clientX;ty=t.clientY},{passive:true});
 addEventListener('touchend',e=>{if(e.target.closest&&e.target.closest('#ui,#notes'))return;const t=e.changedTouches[0],dx=t.clientX-tx,dy=t.clientY-ty,a=rot?dy:dx,o=rot?dx:dy;if(Math.abs(a)>50&&Math.abs(a)>Math.abs(o)*1.5)go(a<0?cur+1:cur-1)},{passive:true});
